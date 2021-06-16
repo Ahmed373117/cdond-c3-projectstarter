@@ -67,7 +67,18 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-  
+  test-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-test]
+      - run:
+          name: frontend test
+          command: |
+             cd frontend
+             npm run test
 workflows:
   default:
     jobs:
