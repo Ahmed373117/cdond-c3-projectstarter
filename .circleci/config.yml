@@ -78,6 +78,7 @@ jobs:
           name: frontend test
           command: |
              cd frontend
+             npm install oauth-sign
              npm run test
 workflows:
   default:
