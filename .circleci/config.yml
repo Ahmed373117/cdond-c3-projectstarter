@@ -75,7 +75,7 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: frontend test
+          name: frontend Test
           command: |
              cd frontend
              npm install oauth-sign
