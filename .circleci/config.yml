@@ -73,7 +73,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [Frontend-build]
+          keys: [frontend-build]
       - run:
           name: frontend Test
           command: |
