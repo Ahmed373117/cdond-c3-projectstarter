@@ -100,6 +100,11 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-build]
+      - run: 
+          name: Update dependencies
+          command: |
+            cd frontend
+            npm install    
       - run:
           name: Scan frontend
           command: |
