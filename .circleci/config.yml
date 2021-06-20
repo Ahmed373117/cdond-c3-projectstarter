@@ -145,7 +145,33 @@ jobs:
               --tags project=Udapeople \
               --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"           
-                  
+      - run:
+          name: Add back-end ip to ansible inventory and memstash
+          command: | 
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=Udapeople" \
+              --output text >> .circleci/ansible/inventory.txt
+             cat .circleci/ansible/inventory.txt
+             ip=$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=Udapeople" \
+              --output text)
+              echo ${ip}
+             curl -H "Content-Type: text/plain" \
+               -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
+               --request PUT \
+               --data ${ip} https://api.memstash.io/values/ip
+      - run: 
+          name: Install tar, gzip
+          command: |
+            yum -y install tar gzip       
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      - destroy-environment:
+          WorkflowID: "${CIRCLE_WORKFLOW_ID:0:7}"              
                              
 workflows:
   default:
