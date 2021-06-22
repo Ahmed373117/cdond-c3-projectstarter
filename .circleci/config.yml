@@ -196,7 +196,7 @@ jobs:
             apk add openssh-client
       - run:
           name: Configure server
-           no_output_timeout: 20m
+          no_output_timeout: 20m
           command: |
             pwd
             touch ~/project/backend/.env
