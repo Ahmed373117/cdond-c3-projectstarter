@@ -332,7 +332,7 @@ jobs:
           command: |
              apk add --update curl nodejs npm
              pip install awscli
-       - run:
+      - run:
           name: Get backend url
           command: |
             export BACKEND_URL=$(sed -n 2p .circleci/ansible/inventory.txt)
