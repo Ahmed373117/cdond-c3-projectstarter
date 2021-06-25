@@ -284,7 +284,44 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             ls -la 
             aws s3 sync dist s3://udapeople-sdhefhpjpdnadel/
-      # Here's where you will add some code to rollback on failure                                     
+      # Here's where you will add some code to rollback on failure   
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - add_ssh_keys: 
+          fingerprints: [39:65:5d:77:8a:df:80:66:6d:74:0f:fb:f4:93:0a:61]
+       - run:
+          name: Install dependencies
+          command: |
+            apk add --update tar gzip ansible nodejs npm curl 
+            pip install awscli
+      - run:
+          name: Install OpenSSH
+          command: |
+            apk add openssh-client
+      - run:
+          name: Deploy backend
+          no_output_timeout: 25m
+          command: |
+            echo ENVIROMENT=development > "backend/.env"
+            echo TYPEORM_CONNECTION=postgres >> "backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
+            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> "backend/.env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt deploy-backend.yml
+          environment:
+            ANSIBLE_HOST_KEY_CHECKING: false
+      # Here's where you will add some code to rollback on failure                                       
 workflows:
   default:
     jobs:
