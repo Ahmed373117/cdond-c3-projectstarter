@@ -162,7 +162,7 @@ jobs:
              curl -H "Content-Type: text/plain" \
                -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
                --request PUT \
-               --data ${BACKEND_IP} https://api.memstash.io/values/ip
+               --data ${BACKEND_IP} https://api.memstash.io/values/backendip
       - run: 
           name: Install tar, gzip
           command: |
@@ -321,7 +321,33 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
           environment:
             ANSIBLE_HOST_KEY_CHECKING: false
-      # Here's where you will add some code to rollback on failure                                       
+      # Here's where you will add some code to rollback on failure
+  smoke-test:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+             apk add --update curl nodejs npm
+             pip install awscli
+      - run:
+          name: Get backend url and smoke test
+          command: |
+            BACKEND_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/backendip)
+            echo ${BACKEND_IP}
+            curl "http://${BACKEND_IP}:3030/api/status"
+      - run:
+          name: Frontend smoke test.
+          command: |
+             if curl -s "http://udapeople-sdhefhpjpdnadel.s3-website-us-east-1.amazonaws.com" | grep "Welcome"
+            then
+              return 0
+            else
+              return 1
+            fi
+      # Here's where you will add some code to rollback on failure                                            
 workflows:
   default:
     jobs:
