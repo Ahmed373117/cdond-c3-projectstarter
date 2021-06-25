@@ -200,7 +200,7 @@ jobs:
           command: |
             pwd
             touch ~/project/backend/.env
-            echo ENVIRONMENT=production >> "backend/.env"
+            echo ENVIRONMENT=development >> "backend/.env"
             echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION>> "backend/.env"
             echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
             echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> "backend/.env"
