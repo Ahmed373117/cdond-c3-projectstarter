@@ -294,7 +294,7 @@ jobs:
           at: ~/
       - add_ssh_keys: 
           fingerprints: [39:65:5d:77:8a:df:80:66:6d:74:0f:fb:f4:93:0a:61]
-       - run:
+      - run:
           name: Install dependencies
           command: |
             apk add --update tar gzip ansible nodejs npm curl 
