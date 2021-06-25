@@ -332,6 +332,8 @@ jobs:
           command: |
              apk add --update curl nodejs npm
              pip install awscli
+      - attach_workspace:
+          at: ~/     
       - run:
           name: Get backend url
           command: |
@@ -339,7 +341,12 @@ jobs:
       - run:
           name: Backend smoke test
           command: |
-             curl -s https://${BACKEND_URL}:3030/api/status
+              if curl -s https://${BACKEND_URL}:3030/api/status
+             then
+             return 1
+             else
+             return 0
+             fi
             
       - run:
           name: Frontend smoke test.
