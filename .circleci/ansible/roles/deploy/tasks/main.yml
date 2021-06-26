@@ -1,45 +1,17 @@
-- name: "upgrade packages."
+- name: Copy backend files
   become: true
-  apt:
-    upgrade: "yes"
-    
-- name: "install dependencies."
-  become: true
-  apt:
-    name: ["nodejs", "npm"]
-    update_cache: yes
-
-- name: Creates directory
-  file:
-    path: /home/ubuntu/backend
-    state: directory
-
-- name: Transfer backend files cloud server
   copy:
-    src: /root/project/backend
-    dest: /home/ubuntu/
+    src: backend.tar.gz
+    dest: /home/ubuntu/backend.tar.gz
 
-- name: "Update npm"
-  become: true
+- name: Start PM2
   shell: |
-    cd /home/ubuntu/backend
-    npm install -g npm@latest
-- name: "NPM install"
-  command: npm install
-  args:
-    chdir: /home/ubuntu/backend
-
-- name: "build package"
-  become: true
-  shell: |
-    cd /home/ubuntu/backend
-    npm run build
-    sudo cat .env
-    sudo npm run prestart:prod
-    
-- name: Executing node
-  become: true
-  shell: |
-    cd /home/ubuntu/backend
-    pm2 start npm --name backend -- start
-    pm2 ls
+    cd /home/ubuntu/
+    tar xzvf backend.tar.gz
+    # mv home/circleci/project/backend .
+    cd backend
+    sudo npm install -g npm@latest
+    sudo npm install -g webpack-dev-server
+    sudo npm install
+    sudo npm run build
+    sudo pm2 start npm --name backend -- start
