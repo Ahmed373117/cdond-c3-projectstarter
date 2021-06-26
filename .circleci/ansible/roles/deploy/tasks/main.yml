@@ -10,11 +10,10 @@
     src: /root/project/backend
     dest: /home/ubuntu
 
-- name: "Install dependencies"
-  shell: |
-    cd /home/ubuntu/backend   
-    ls -la 
-    npm install
+- name: "NPM install"
+  command: npm install
+  args:
+    chdir: /home/ubuntu/backend
     
 - name: "build package"
   become: true
