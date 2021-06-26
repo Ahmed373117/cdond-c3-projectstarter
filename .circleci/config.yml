@@ -282,7 +282,7 @@ jobs:
             ls -la 
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             ls -la 
-            aws s3 sync dist s3://udapeople-sdhefhpjpdnadel/
+            aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/
       # Here's where you will add some code to rollback on failure   
   deploy-backend:
     docker:
@@ -330,22 +330,13 @@ jobs:
           name: Install dependencies
           command: |
              apk add --update curl nodejs npm
-             pip install awscli
-      - attach_workspace:
-          at: ~/     
+             pip install awscli     
       - run:
-          name: Get backend url
+          name: Get the URL of Backend and smoke test.
           command: |
-            export BACKEND_URL=$(sed -n 2p .circleci/ansible/inventory.txt)
-      - run:
-          name: Backend smoke test
-          command: |
-             if curl -s https://${BACKEND_URL}:3030/api/status
-             then
-             return 1
-             else
-             return 0
-             fi
+            ip=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/ip)
+            echo ${ip}
+            curl "http://${ip}:3030/api/status"
             
       - run:
           name: Frontend smoke test.
@@ -354,7 +345,7 @@ jobs:
              then
              return 0
              else
-              return 1
+             return 1
              fi
       # Here's where you will add some code to rollback on failure                                            
 workflows:
