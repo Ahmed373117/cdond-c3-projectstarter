@@ -1,0 +1,59 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@Ahmed373117 
+Peter2220
+/
+Udapeople-proj
+1
+00
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Udapeople-proj/.circleci/ansible/roles/deploy/tasks/main.yml
+@Rock2220
+Rock2220 Smoke test
+Latest commit 247d31b on Jan 13
+ History
+ 1 contributor
+30 lines (26 sloc)  547 Bytes
+  
+---
+- name: "Creates directory"
+  file:
+    path: /home/ubuntu/backend
+    state: directory
+    
+- name: "Move backend files to remote server."
+  become: true
+  copy:
+    src: /root/project/backend
+    dest: /home/ubuntu
+
+- name: "Install dependencies"
+  shell: |
+    cd /home/ubuntu/backend   
+    ls -la 
+    npm install
+    
+- name: "build package"
+  become: true
+  shell: |
+    cd /home/ubuntu/backend
+    npm run build
+- name: "run server"
+  become: true
+  shell: |
+    cd /home/ubuntu/backend
+    pm2 start npm -- run "start:dev"
+    pm2 ls
