@@ -14,7 +14,7 @@
   shell: |
     cd /home/ubuntu/backend   
     ls -la 
-    npm install -g npm@latest
+    sudo npm install -g npm@latest
     
 - name: "build package"
   become: true
