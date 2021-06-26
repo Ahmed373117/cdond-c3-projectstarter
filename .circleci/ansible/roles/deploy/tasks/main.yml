@@ -1,30 +1,45 @@
----
-- name: "Creates directory"
+- name: "upgrade packages."
+  become: true
+  apt:
+    upgrade: "yes"
+    
+- name: "install dependencies."
+  become: true
+  apt:
+    name: ["nodejs", "npm"]
+    update_cache: yes
+
+- name: Creates directory
   file:
     path: /home/ubuntu/backend
     state: directory
-    
-- name: "Move backend files to remote server."
-  become: true
+
+- name: Transfer backend files cloud server
   copy:
     src: /root/project/backend
-    dest: /home/ubuntu
+    dest: /home/ubuntu/
 
-- name: "Install dependencies"
+- name: "Update npm"
+  become: true
   shell: |
-    cd /home/ubuntu/backend   
-    ls -la
-    npm audit fix 
-    npm install
-    
+    cd /home/ubuntu/backend
+    npm install -g npm@latest
+- name: "NPM install"
+  command: npm install
+  args:
+    chdir: /home/ubuntu/backend
+
 - name: "build package"
   become: true
   shell: |
     cd /home/ubuntu/backend
     npm run build
-- name: "run server"
+    sudo cat .env
+    sudo npm run prestart:prod
+    
+- name: Executing node
   become: true
   shell: |
     cd /home/ubuntu/backend
-    pm2 start npm -- run "start:dev"
+    pm2 start npm --name backend -- start
     pm2 ls
