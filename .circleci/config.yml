@@ -92,7 +92,8 @@ jobs:
           command: |
              cd backend
              npm install oauth-sign
-             npm run test  
+             npm run test
+             npm audit fix  
   scan-frontend:
     docker:
       - image: circleci/node:13.8.0
