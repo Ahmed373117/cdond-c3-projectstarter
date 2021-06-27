@@ -63,10 +63,10 @@ jobs:
              npm install
              npm run build
              npm audit fix
-             
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+
   test-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -75,11 +75,12 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: frontend test
+          name: Test frontend
           command: |
-             cd frontend
-             npm install oauth-sign
-             npm run test
+            cd frontend
+            npm install oauth-sign
+            npm run test
+                
   test-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -88,12 +89,11 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: backend test
+          name: Test backend
           command: |
-             cd backend
-             npm install oauth-sign
-             npm run test
-             npm audit fix  
+            cd backend
+            npm run test
+            
   scan-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -105,27 +105,27 @@ jobs:
           name: Update dependencies
           command: |
             cd frontend
-            npm install    
+            npm install
       - run:
           name: Scan frontend
           command: |
             cd frontend
             npm update
             npm audit fix --audit-level=critical --force
+
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [build-backend]
       - run:
           name: Analyze backend
           command: |
-           cd backend
-           npm update
-           npm audit fix --audit-level=critical --force
-                   
+            cd backend
+            npm update
+            npm audit fix --audit-level=critical --force                 
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
