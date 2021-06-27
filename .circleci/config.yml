@@ -115,6 +115,7 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
+      - checkout
       - restore_cache:
           keys: [backend-build]
       - run:
@@ -124,7 +125,6 @@ jobs:
            npm update
                    
   deploy-infrastructure:
-      - checkout
     docker:
       - image: amazon/aws-cli
     steps:
