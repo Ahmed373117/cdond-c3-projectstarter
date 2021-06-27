@@ -116,20 +116,16 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - checkout
       - restore_cache:
           keys: [backend-build]
       - run:
           name: Analyze backend
           command: |
            cd backend
-           sudo npm install npm@latest -g
-           sudo npm i --save-dev standard-version
-           sudo npm i semver
-           sudo npm update
-           sudo npm audit fix --audit-level=critical --force
+           npm update
                    
   deploy-infrastructure:
+      - checkout
     docker:
       - image: amazon/aws-cli
     steps:
