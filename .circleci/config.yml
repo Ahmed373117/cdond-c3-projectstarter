@@ -126,9 +126,9 @@ jobs:
            sudo npm install npm@latest -g
            sudo npm i --save-dev standard-version
            sudo npm i semver
-           sudo npm audit
+           sudo npm update
            sudo npm audit fix --audit-level=critical --force
-           sudo npm audit        
+                   
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
