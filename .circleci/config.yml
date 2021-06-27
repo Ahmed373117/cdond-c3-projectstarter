@@ -124,6 +124,9 @@ jobs:
           name: Analyze backend
           command: |
             cd backend
+            sudo npm install npm@latest -g
+            sudo npm i --save-dev standard-version
+            sudo npm i semver
             npm update
             npm audit fix --audit-level=critical --force                 
   deploy-infrastructure:
