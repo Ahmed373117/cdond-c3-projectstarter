@@ -1,13 +1,15 @@
 Description: >
   UdaPeople backend stack.
-
-
+Parameters:
+  ID:
+    Description: Unique identifier.
+    Type: String
 
 Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: udapeople-sdhefhpjpdnadel
+      GroupName: !Sub UdaPeople-${ID}
       GroupDescription: Allow the following ports - 22, 3030, 9100, 9090, 9093.
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -30,14 +32,6 @@ Resources:
           FromPort: 9090
           ToPort: 9090
           CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 0.0.0.0/0  
 
   EC2Instance:
     Type: AWS::EC2::Instance
@@ -51,4 +45,4 @@ Resources:
       ImageId: ami-0e4d932065378fd3d
       Tags:
         - Key: Name
-          Value: udapeople-backend-ec2-sdhefhpjpdnadel
+          Value: !Sub udapeople-backend-ec2-${ID}
