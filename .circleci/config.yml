@@ -257,6 +257,7 @@ jobs:
             echo ${result}
       - destroy-environment:
           WorkflowID: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - revert-migrations    
   deploy-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -287,7 +288,9 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             ls -la 
             aws s3 sync dist s3://udapeople-sdhefhpjpdnadel/
-      # Here's where you will add some code to rollback on failure   
+      - destroy-environment:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations    
   deploy-backend:
     docker:
       - image: python:3.7-alpine3.11
@@ -324,7 +327,9 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
           environment:
             ANSIBLE_HOST_KEY_CHECKING: false
-      # Here's where you will add some code to rollback on failure
+      - destroy-environment:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations 
   smoke-test:
     docker:
       - image: python:3.7-alpine3.11
@@ -345,13 +350,15 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-             if curl -s "http://udapeople-sdhefhpjpdnadel.s3-website-us-east-1.amazonaws.com" | grep "Welcome"
+             if curl -s "http://udapeople-sdhefhpjpdnade.s3-website-us-east-1.amazonaws.com" | grep "Welcome"
              then
              return 0
              else
              return 1
              fi
-      # Here's where you will add some code to rollback on failure                                            
+      - destroy-environment:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations                                            
 workflows:
   default:
     jobs:
